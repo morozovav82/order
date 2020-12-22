@@ -1,6 +1,6 @@
 replicaCount: 2
 
-image: morozovav82/order:1.0
+image: morozovav82/order:1.1
 
 service:
   type: NodePort
