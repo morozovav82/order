@@ -49,20 +49,20 @@ spec:
             - name: MQ_URL
               valueFrom:
                 configMapKeyRef:
-                  name: bill-config
+                  name: order-config
                   key: MQ_URL
             - name: MQ_PORT
               valueFrom:
                 configMapKeyRef:
-                  name: bill-config
+                  name: order-config
                   key: MQ_PORT
             - name: MQ_USER
               valueFrom:
                 configMapKeyRef:
-                  name: bill-config
+                  name: order-config
                   key: MQ_USER
             - name: MQ_PSW
               valueFrom:
                 secretKeyRef:
-                  name: bill-secret
+                  name: order-secret
                   key: MQ_PSW
