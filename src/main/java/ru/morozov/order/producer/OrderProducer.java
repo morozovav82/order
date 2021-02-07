@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Component;
-import ru.morozov.order.messages.OrderCreatedMsg;
+import ru.morozov.messages.OrderCreatedMsg;
 
 @Component
 @Slf4j
@@ -14,10 +14,10 @@ public class OrderProducer {
     @Autowired
     private JmsTemplate jmsTemplate;
 
-    @Value("${active-mq.order-created-topic}")
-    private String topic;
+    @Value("${active-mq.OrderCreated-topic}")
+    private String orderCreatedTopic;
 
-    public void sendMessage(OrderCreatedMsg message){
+    private void sendMessage(String topic, Object message){
         try{
             log.info("Attempting send message to Topic: "+ topic);
             jmsTemplate.convertAndSend(topic, message);
@@ -25,5 +25,9 @@ public class OrderProducer {
         } catch(Exception e){
             log.error("Failed to send message", e);
         }
+    }
+
+    public void sendOrderCreatedMessage(OrderCreatedMsg message){
+        sendMessage(orderCreatedTopic, message);
     }
 }

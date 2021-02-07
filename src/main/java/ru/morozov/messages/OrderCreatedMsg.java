@@ -1,4 +1,4 @@
-package ru.morozov.order.messages;
+package ru.morozov.messages;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,4 +13,5 @@ public class OrderCreatedMsg implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private Long orderId;
+    private Long userId;
 }

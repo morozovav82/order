@@ -11,10 +11,11 @@ spring:
       password: ${MQ_PSW}
       mode: native
 
-app:basePath:
+app.basePath:
+cart.url: ${CART_URL}
 
 active-mq:
-  order-created-topic: OrderCreated
+  OrderCreated-topic: OrderCreated
 
 #настройка actuator
 management:

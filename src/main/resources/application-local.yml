@@ -1,5 +1,7 @@
 server:
   port: 8083
+  servlet:
+    context-path: '/order'
 
 spring:
   datasource:
@@ -14,7 +16,5 @@ spring:
     password: password
     mode: native
 
-app:basePath: /
-
-active-mq:
-  new-order-topic: OrderRequested
+app.basePath: /order
+cart.url: http://localhost:8087

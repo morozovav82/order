@@ -3,10 +3,9 @@ package ru.morozov.order.entity;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.SequenceGenerator;
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 import static javax.persistence.GenerationType.SEQUENCE;
 
@@ -20,8 +19,10 @@ public class Order {
     @GeneratedValue(strategy=SEQUENCE, generator="orders_gen")
     private Long id;
 
+    @OneToMany(mappedBy="order", cascade = CascadeType.ALL)
+    private List<OrderProduct> products = new ArrayList<>();
+
     private Long userId;
-    private Integer productId;
-    private Integer qnt;
-    private Float cost;
+    private String status;
+    private String deliveryDetails;
 }

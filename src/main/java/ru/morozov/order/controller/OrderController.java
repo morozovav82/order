@@ -6,65 +6,45 @@ import net.jodah.expiringmap.ExpiringMap;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.morozov.order.OrderMapper;
-import ru.morozov.order.dto.NewOrderDto;
+import ru.morozov.order.dto.NewOrderRequest;
 import ru.morozov.order.dto.OrderDto;
-import ru.morozov.order.entity.Order;
-import ru.morozov.order.messages.OrderCreatedMsg;
-import ru.morozov.order.producer.OrderProducer;
-import ru.morozov.order.repo.OrderRepository;
+import ru.morozov.order.exceptions.NotFoundException;
+import ru.morozov.order.service.OrderService;
 
 import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
-@RestController()
-@RequestMapping("/order")
+@RestController
+@RequestMapping
 @RequiredArgsConstructor
 @Slf4j
 public class OrderController {
 
-    private final OrderRepository orderRepository;
-    private final OrderProducer orderProducer;
+    private final OrderService orderService;
 
-    private static Map<String, NewOrderDto> idempotenceKeys = ExpiringMap.builder()
+    private static Map<String, NewOrderRequest> idempotenceKeys = ExpiringMap.builder()
             .expiration(1, TimeUnit.MINUTES)
             .build();
 
-    @PostMapping("")
-    public ResponseEntity<OrderDto> createOrder(@RequestBody NewOrderDto order, @RequestHeader("X-Request-Id") String idempotenceKey) {
+    @PostMapping
+    public ResponseEntity<OrderDto> createOrder(@RequestBody NewOrderRequest order, @RequestHeader("X-Request-Id") String idempotenceKey) {
         log.info("idempotenceKey={}", idempotenceKey);
 
         //idempotence check
-        NewOrderDto iOrder = idempotenceKeys.put(idempotenceKey + "_" + order.hashCode(), order);
-        if (iOrder != null && iOrder.equals(order)) {
+        NewOrderRequest iOrder = idempotenceKeys.put(idempotenceKey, order);
+        if (iOrder != null) {
+            log.info("Order has already been processed. IdempotenceKey=" + idempotenceKey);
             return new ResponseEntity(HttpStatus.NO_CONTENT);
         }
 
-        //create order
-        OrderDto orderDto = OrderMapper.convertOrderToOrderDto(
-                orderRepository.save(
-                        OrderMapper.convertNewOrderDtoToOrder(order)
-                )
-        );
-
-        log.info("Order saved. OrderId=" + orderDto.getId());
-
-        //send message to MQ
-        orderProducer.sendMessage(new OrderCreatedMsg(orderDto.getId()));
-
-        return new ResponseEntity(orderDto, HttpStatus.CREATED);
+        return new ResponseEntity(orderService.create(order), HttpStatus.CREATED);
     }
 
-    @GetMapping("/{orderId}")
-    public ResponseEntity<Order> getOrder(@PathVariable("orderId") Long orderId) {
-        Optional<Order> res = orderRepository.findById(orderId);
-        if (res.isPresent()) {
-            return new ResponseEntity(
-                    OrderMapper.convertOrderToOrderDto(res.get()),
-                    HttpStatus.OK
-            );
-        } else {
+    @GetMapping("/{orderId:\\d+}")
+    public ResponseEntity<OrderDto> getOrder(@PathVariable("orderId") Long orderId) {
+        try {
+            return new ResponseEntity(orderService.get(orderId), HttpStatus.OK);
+        } catch (NotFoundException e) {
             return new ResponseEntity(HttpStatus.NOT_FOUND);
         }
     }

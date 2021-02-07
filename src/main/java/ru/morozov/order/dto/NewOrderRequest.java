@@ -2,15 +2,12 @@ package ru.morozov.order.dto;
 
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.List;
+import lombok.ToString;
 
 @Getter
 @Setter
-public class OrderDto {
-    private Long id;
+@ToString
+public class NewOrderRequest {
     private Long userId;
-    private List<OrderProductDto> products;
     private String deliveryDetails;
-    private String status;
 }
