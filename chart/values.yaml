@@ -1,12 +1,13 @@
 replicaCount: 2
 
-image: morozovav82/order:1.1
+image: morozovav82/order:1.2
 
 service:
   type: NodePort
   port: 9000
 
 appBasePath: '/order'
+cartUrl: 'http://cart-cart-chart.morozovav.svc.cluster.local:9000'
 
 postgresql:
   fullname: users-postgresql

@@ -8,6 +8,7 @@ data:
   MQ_URL: {{ .Values.mq.url }}
   MQ_PORT: {{ .Values.mq.port | quote }}
   MQ_USER: {{ .Values.mq.user }}
+  CART_URL: {{ .Values.cartUrl }}
 ---
 apiVersion: v1
 kind: Secret
