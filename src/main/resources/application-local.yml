@@ -17,4 +17,4 @@ spring:
     mode: native
 
 app.basePath: /order
-cart.url: http://localhost:8087
+cart.url: http://localhost:8087/cart

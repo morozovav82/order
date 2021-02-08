@@ -18,7 +18,7 @@ public class CartService {
     public CartDto getCart(Long userId) {
         RestTemplate restTemplate = new RestTemplate();
         try {
-            String url = cartUrl + "/cart/" + userId;
+            String url = cartUrl + "/" + userId;
             log.debug("Sent request to " + url);
             ResponseEntity<CartDto> result = restTemplate.getForEntity(url, CartDto.class);
             log.info("Order found. Result: {}", result.getBody());
