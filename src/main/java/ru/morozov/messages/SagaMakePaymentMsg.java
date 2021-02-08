@@ -1,19 +1,18 @@
 package ru.morozov.messages;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 import java.io.Serializable;
 
 @Getter
+@Setter
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
-public class OrderCreatedMsg implements Serializable {
+public class SagaMakePaymentMsg implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private Long orderId;
     private Long userId;
+    private Float priceTotal;
 }

@@ -11,9 +11,8 @@ import java.io.Serializable;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
-public class OrderCreatedMsg implements Serializable {
+public class OrderDoneMsg implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private Long orderId;
-    private Long userId;
 }

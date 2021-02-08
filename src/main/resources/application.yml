@@ -16,6 +16,24 @@ cart.url: ${CART_URL}
 
 active-mq:
   OrderCreated-topic: OrderCreated
+  OrderReady-topic: OrderReady
+  OrderCanceled-topic: OrderCanceled
+  OrderDone-topic: OrderDone
+
+  SagaReserveProduct-topic: SagaReserveProduct
+  SagaReserveProductRollback-topic: SagaReserveProductRollback
+  ProductReserved-topic: ProductReserved
+  NotEnoughProduct-topic: NotEnoughProduct
+
+  SagaMakePayment-topic: SagaMakePayment
+  SagaMakePaymentRollback-topic: SagaMakePaymentRollback
+  PaymentSuccessful-topic: PaymentSuccessful
+  PaymentRejected-topic: PaymentRejected
+
+  SagaScheduleDelivery-topic: SagaScheduleDelivery
+  SagaScheduleDeliveryRollback-topic: SagaScheduleDeliveryRollback
+  DeliveryScheduled-topic: DeliveryScheduled
+  DeliveryRejected-topic: DeliveryRejected
 
 #настройка actuator
 management:

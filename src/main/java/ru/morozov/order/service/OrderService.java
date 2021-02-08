@@ -3,7 +3,11 @@ package ru.morozov.order.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import ru.morozov.messages.OrderCanceledMsg;
 import ru.morozov.messages.OrderCreatedMsg;
+import ru.morozov.messages.OrderDoneMsg;
+import ru.morozov.messages.OrderReadyMsg;
 import ru.morozov.order.dto.*;
 import ru.morozov.order.entity.Order;
 import ru.morozov.order.entity.Status;
@@ -16,6 +20,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 @Slf4j
 public class OrderService {
@@ -31,7 +36,7 @@ public class OrderService {
         NewOrderDto newOrderDto = new NewOrderDto();
         newOrderDto.setUserId(order.getUserId());
         newOrderDto.setDeliveryDetails(order.getDeliveryDetails());
-        newOrderDto.setStatus(Status.ACTIVE.name());
+        newOrderDto.setStatus(Status.NEW.name());
 
         newOrderDto.setProducts(cartDto.getProducts().stream()
                 .map(i -> {
@@ -62,6 +67,56 @@ public class OrderService {
         Optional<Order> res = orderRepository.findById(orderId);
         if (res.isPresent()) {
             return OrderMapper.convertOrderToOrderDto(res.get());
+        } else {
+            throw new NotFoundException(orderId);
+        }
+    }
+
+    public void confirm(Long orderId) {
+        Optional<Order> res = orderRepository.findOneByIdAndStatus(orderId, Status.NEW.name());
+        if (res.isPresent()) {
+            Order order = res.get();
+            order.setStatus(Status.CONFIRMED.name());
+            orderRepository.save(order);
+        } else {
+            throw new NotFoundException(orderId);
+        }
+    }
+
+    public void ready(Long orderId) {
+        Optional<Order> res = orderRepository.findOneByIdAndStatus(orderId, Status.CONFIRMED.name());
+        if (res.isPresent()) {
+            Order order = res.get();
+            order.setStatus(Status.READY.name());
+            orderRepository.save(order);
+
+            orderProducer.sendOrderReadyMessage(new OrderReadyMsg(orderId));
+        } else {
+            throw new NotFoundException(orderId);
+        }
+    }
+
+    public void done(Long orderId) {
+        Optional<Order> res = orderRepository.findOneByIdAndStatus(orderId, Status.READY.name());
+        if (res.isPresent()) {
+            Order order = res.get();
+            order.setStatus(Status.DONE.name());
+            orderRepository.save(order);
+
+            orderProducer.sendOrderDoneMessage(new OrderDoneMsg(orderId));
+        } else {
+            throw new NotFoundException(orderId);
+        }
+    }
+
+    public void cancel(Long orderId) {
+        Optional<Order> res = orderRepository.findById(orderId);
+        if (res.isPresent()) {
+            Order order = res.get();
+            order.setStatus(Status.CANCELED.name());
+            orderRepository.save(order);
+
+            orderProducer.sendOrderCanceledMessage(new OrderCanceledMsg(orderId));
         } else {
             throw new NotFoundException(orderId);
         }

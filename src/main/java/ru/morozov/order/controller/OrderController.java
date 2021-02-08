@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.morozov.order.dto.NewOrderRequest;
 import ru.morozov.order.dto.OrderDto;
 import ru.morozov.order.exceptions.NotFoundException;
+import ru.morozov.order.service.OrderSagaService;
 import ru.morozov.order.service.OrderService;
 
 import java.util.Map;
@@ -21,6 +22,7 @@ import java.util.concurrent.TimeUnit;
 public class OrderController {
 
     private final OrderService orderService;
+    private final OrderSagaService orderSagaService;
 
     private static Map<String, NewOrderRequest> idempotenceKeys = ExpiringMap.builder()
             .expiration(1, TimeUnit.MINUTES)
@@ -44,6 +46,38 @@ public class OrderController {
     public ResponseEntity<OrderDto> getOrder(@PathVariable("orderId") Long orderId) {
         try {
             return new ResponseEntity(orderService.get(orderId), HttpStatus.OK);
+        } catch (NotFoundException e) {
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @PostMapping("/{orderId:\\d+}/confirm")
+    public ResponseEntity confirm(@PathVariable("orderId") Long orderId) {
+        try {
+            orderService.confirm(orderId);
+            orderSagaService.start(orderId);
+            return new ResponseEntity(HttpStatus.OK);
+        } catch (NotFoundException e) {
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @PostMapping("/{orderId:\\d+}/cancel")
+    public ResponseEntity cancel(@PathVariable("orderId") Long orderId) {
+        try {
+            orderService.cancel(orderId);
+            orderSagaService.cancel(orderId);
+            return new ResponseEntity(HttpStatus.OK);
+        } catch (NotFoundException e) {
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @PostMapping("/{orderId:\\d+}/done")
+    public ResponseEntity done(@PathVariable("orderId") Long orderId) {
+        try {
+            orderService.done(orderId);
+            return new ResponseEntity(HttpStatus.OK);
         } catch (NotFoundException e) {
             return new ResponseEntity(HttpStatus.NOT_FOUND);
         }
