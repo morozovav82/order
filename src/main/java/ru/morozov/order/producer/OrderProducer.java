@@ -26,6 +26,9 @@ public class OrderProducer {
     @Value("${active-mq.OrderDone-topic}")
     private String orderDoneTopic;
 
+    @Value("${active-mq.ProductSold-topic}")
+    private String productSoldTopic;
+
     private void sendMessage(String topic, Object message){
         try{
             log.info("Attempting send message to Topic: "+ topic);
@@ -50,5 +53,9 @@ public class OrderProducer {
 
     public void sendOrderDoneMessage(OrderDoneMsg message) {
         sendMessage(orderDoneTopic, message);
+    }
+
+    public void sendProductSoldMessage(ProductSoldMsg message) {
+        sendMessage(productSoldTopic, message);
     }
 }

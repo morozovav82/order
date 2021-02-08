@@ -4,10 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.morozov.messages.OrderCanceledMsg;
-import ru.morozov.messages.OrderCreatedMsg;
-import ru.morozov.messages.OrderDoneMsg;
-import ru.morozov.messages.OrderReadyMsg;
+import ru.morozov.messages.*;
 import ru.morozov.order.dto.*;
 import ru.morozov.order.entity.Order;
 import ru.morozov.order.entity.Status;
@@ -104,6 +101,7 @@ public class OrderService {
             orderRepository.save(order);
 
             orderProducer.sendOrderDoneMessage(new OrderDoneMsg(orderId));
+            orderProducer.sendProductSoldMessage(new ProductSoldMsg(order.getProductQntList()));
         } else {
             throw new NotFoundException(orderId);
         }
