@@ -68,6 +68,6 @@ spec:
                   key: MQ_PSW
             - name: CART_URL
               valueFrom:
-                secretKeyRef:
-                  name: order-secret
+                configMapKeyRef:
+                  name: order-config
                   key: CART_URL
