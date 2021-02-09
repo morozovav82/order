@@ -4,17 +4,17 @@ server:
     context-path: '/order'
 
 spring:
-  datasource:
-    driver-class-name: 'org.postgresql.Driver'
-    url: jdbc:postgresql://localhost:5432/postgres?currentShema=orders
-    username: orders
-    password: qwerty123
-  artemis:
-    host: localhost
-    port: 61616
-    user: artemis
-    password: password
-    mode: native
+    datasource:
+      driver-class-name: 'org.postgresql.Driver'
+      url: jdbc:postgresql://localhost:5432/postgres?currentShema=orders
+      username: orders
+      password: qwerty123
+    rabbitmq:
+      host: localhost
+      port: 5672
+      username: rabbit
+      password: rabbit
+
 
 app.basePath: /order
 cart.url: http://localhost:8087/cart
