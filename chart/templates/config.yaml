@@ -9,6 +9,8 @@ data:
   MQ_PORT: {{ .Values.mq.port | quote }}
   MQ_USER: {{ .Values.mq.username }}
   CART_URL: {{ .Values.cartUrl }}
+  REDIS_HOST: {{ .Values.redis.host }}
+  REDIS_PORT: {{ .Values.redis.port | quote }}
 ---
 apiVersion: v1
 kind: Secret

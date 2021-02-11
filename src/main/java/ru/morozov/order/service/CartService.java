@@ -21,7 +21,7 @@ public class CartService {
             String url = cartUrl + "/" + userId;
             log.debug("Sent request to " + url);
             ResponseEntity<CartDto> result = restTemplate.getForEntity(url, CartDto.class);
-            log.info("Order found. Result: {}", result.getBody());
+            log.info("Cart found. Result: {}", result.getBody());
             return result.getBody();
         } catch (HttpClientErrorException.NotFound e) {
             throw new RuntimeException("Cart not found by userId: " + userId);

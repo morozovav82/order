@@ -13,6 +13,7 @@ import ru.morozov.order.mapper.OrderMapper;
 import ru.morozov.order.producer.OrderProducer;
 import ru.morozov.order.repo.OrderRepository;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -118,5 +119,13 @@ public class OrderService {
         } else {
             throw new NotFoundException(orderId);
         }
+    }
+
+    public List<OrderDto> search(String status) {
+        List<Order> orders = orderRepository.findByStatus(status);
+
+        return orders.stream()
+                .map(i -> OrderMapper.convertOrderToOrderDto(i))
+                .collect(Collectors.toList());
     }
 }

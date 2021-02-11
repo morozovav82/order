@@ -2,18 +2,19 @@ package ru.morozov.order.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.jodah.expiringmap.ExpiringMap;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import ru.morozov.order.dto.NewOrderRequest;
 import ru.morozov.order.dto.OrderDto;
+import ru.morozov.order.entity.Status;
 import ru.morozov.order.exceptions.NotFoundException;
+import ru.morozov.order.repo.RedisRepository;
 import ru.morozov.order.service.OrderSagaService;
 import ru.morozov.order.service.OrderService;
 
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
+import java.util.List;
 
 @RestController
 @RequestMapping
@@ -21,22 +22,21 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public class OrderController {
 
+    private final RedisRepository redisRepository;
     private final OrderService orderService;
     private final OrderSagaService orderSagaService;
-
-    private static Map<String, NewOrderRequest> idempotenceKeys = ExpiringMap.builder()
-            .expiration(1, TimeUnit.MINUTES)
-            .build();
 
     @PostMapping
     public ResponseEntity<OrderDto> createOrder(@RequestBody NewOrderRequest order, @RequestHeader("X-Request-Id") String idempotenceKey) {
         log.info("idempotenceKey={}", idempotenceKey);
 
         //idempotence check
-        NewOrderRequest iOrder = idempotenceKeys.put(idempotenceKey, order);
+        NewOrderRequest iOrder = (NewOrderRequest) redisRepository.find(idempotenceKey);
         if (iOrder != null) {
             log.info("Order has already been processed. IdempotenceKey=" + idempotenceKey);
             return new ResponseEntity(HttpStatus.NO_CONTENT);
+        } else {
+            redisRepository.add(idempotenceKey, order);
         }
 
         return new ResponseEntity(orderService.create(order), HttpStatus.CREATED);
@@ -81,5 +81,14 @@ public class OrderController {
         } catch (NotFoundException e) {
             return new ResponseEntity(HttpStatus.NOT_FOUND);
         }
+    }
+
+    @GetMapping("/search")
+    public List<OrderDto> search(@RequestParam(required = false) String status) {
+        if (!StringUtils.hasText(status)) {
+            status = Status.NEW.name();
+        }
+
+        return orderService.search(status);
     }
 }
