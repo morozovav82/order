@@ -1,6 +1,7 @@
 package ru.morozov.order.config;
 
 import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.core.TopicExchange;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -35,11 +36,8 @@ public class MqConfig {
     @Value("${active-mq.OrderCanceled-topic}")
     private String orderCanceledTopic;
 
-    @Value("${active-mq.OrderDone-topic}")
-    private String orderDoneTopic;
-
-    @Value("${active-mq.ProductSold-topic}")
-    private String productSoldTopic;
+    @Value("${active-mq.OrderDone-exchange}")
+    private String orderDoneExchange;
 
     @Value("${active-mq.SagaReserveProduct-topic}")
     private String sagaReserveProductTopic;
@@ -105,16 +103,6 @@ public class MqConfig {
     }
 
     @Bean
-    public Queue orderDoneQueue() {
-        return new Queue(orderDoneTopic);
-    }
-
-    @Bean
-    public Queue productSoldQueue() {
-        return new Queue(productSoldTopic);
-    }
-
-    @Bean
     public Queue sagaReserveProductQueue() {
         return new Queue(sagaReserveProductTopic);
     }
@@ -142,5 +130,10 @@ public class MqConfig {
     @Bean
     public Queue sagaScheduleDeliveryRollbackQueue() {
         return new Queue(sagaScheduleDeliveryRollbackTopic);
+    }
+
+    @Bean
+    TopicExchange orderDoneExchange() {
+        return new TopicExchange(orderDoneExchange);
     }
 }

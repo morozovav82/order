@@ -38,10 +38,16 @@ public class TestController {
     @Value("${active-mq.DeliveryRejected-topic}")
     private String deliveryRejectedTopic;
 
-    private void sendMessage(String topic, Object message){
+    @Value("${active-mq.OrderDone-exchange}")
+    private String orderDoneExchange;
+
+    private void sendMessage(String topic, String routingKey, Object message){
         try{
             log.info("Attempting send message to Topic: "+ topic);
-            rabbitTemplate.convertAndSend(topic, message);
+            if (routingKey == null)
+                rabbitTemplate.convertAndSend(topic, message);
+            else
+                rabbitTemplate.convertAndSend(topic, routingKey, message);
             log.info("Message sent: {}", message);
         } catch(Exception e){
             log.error("Failed to send message", e);
@@ -50,31 +56,36 @@ public class TestController {
 
     @PostMapping("/sendProductReservedMsg")
     public void sendProductReservedMsg(@RequestBody ProductReservedMsg message) {
-        sendMessage(productReservedTopic, message);
+        sendMessage(productReservedTopic, null, message);
     }
 
     @PostMapping("/sendNotEnoughProductMsg")
     public void sendNotEnoughProductMsg(@RequestBody NotEnoughProductMsg message) {
-        sendMessage(notEnoughProductTopic, message);
+        sendMessage(notEnoughProductTopic, null, message);
     }
 
     @PostMapping("/sendPaymentSuccessfulMsg")
     public void sendPaymentSuccessfulMsg(@RequestBody PaymentSuccessfulMsg message) {
-        sendMessage(paymentSuccessfulTopic, message);
+        sendMessage(paymentSuccessfulTopic, null, message);
     }
 
     @PostMapping("/sendPaymentRejectedMsg")
     public void sendPaymentRejectedMsg(@RequestBody PaymentRejectedMsg message) {
-        sendMessage(paymentRejectedTopic, message);
+        sendMessage(paymentRejectedTopic, null, message);
     }
 
     @PostMapping("/sendDeliveryScheduledMsg")
     public void sendNotEnoughProductMsg(@RequestBody DeliveryScheduledMsg message) {
-        sendMessage(deliveryScheduledTopic, message);
+        sendMessage(deliveryScheduledTopic, null, message);
     }
 
     @PostMapping("/sendDeliveryRejectedMsg")
     public void sendDeliveryRejectedMsg(@RequestBody DeliveryRejectedMsg message) {
-        sendMessage(deliveryRejectedTopic, message);
+        sendMessage(deliveryRejectedTopic, null, message);
+    }
+
+    @PostMapping("/sendOrderDoneMsg")
+    public void sendOrderDoneMsg(@RequestBody OrderDoneMsg message) {
+        sendMessage(orderDoneExchange, "default", message);
     }
 }

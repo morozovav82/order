@@ -23,16 +23,16 @@ public class OrderProducer {
     @Value("${active-mq.OrderCanceled-topic}")
     private String orderCanceledTopic;
 
-    @Value("${active-mq.OrderDone-topic}")
-    private String orderDoneTopic;
+    @Value("${active-mq.OrderDone-exchange}")
+    private String orderDoneExchange;
 
-    @Value("${active-mq.ProductSold-topic}")
-    private String productSoldTopic;
-
-    private void sendMessage(String topic, Object message){
+    private void sendMessage(String topic, String routingKey, Object message){
         try{
             log.info("Attempting send message to Topic: "+ topic);
-            rabbitTemplate.convertAndSend(topic, message);
+            if (routingKey == null)
+                rabbitTemplate.convertAndSend(topic, message);
+            else
+                rabbitTemplate.convertAndSend(topic, routingKey, message);
             log.info("Message sent: {}", message);
         } catch(Exception e){
             log.error("Failed to send message", e);
@@ -40,22 +40,18 @@ public class OrderProducer {
     }
 
     public void sendOrderCreatedMessage(OrderCreatedMsg message){
-        sendMessage(orderCreatedTopic, message);
+        sendMessage(orderCreatedTopic, null, message);
     }
 
     public void sendOrderReadyMessage(OrderReadyMsg message){
-        sendMessage(orderReadyTopic, message);
+        sendMessage(orderReadyTopic, null, message);
     }
 
     public void sendOrderCanceledMessage(OrderCanceledMsg message){
-        sendMessage(orderCanceledTopic, message);
+        sendMessage(orderCanceledTopic, null, message);
     }
 
     public void sendOrderDoneMessage(OrderDoneMsg message) {
-        sendMessage(orderDoneTopic, message);
-    }
-
-    public void sendProductSoldMessage(ProductSoldMsg message) {
-        sendMessage(productSoldTopic, message);
+        sendMessage(orderDoneExchange, "default", message);
     }
 }

@@ -101,8 +101,7 @@ public class OrderService {
             order.setStatus(Status.DONE.name());
             orderRepository.save(order);
 
-            orderProducer.sendOrderDoneMessage(new OrderDoneMsg(orderId));
-            orderProducer.sendProductSoldMessage(new ProductSoldMsg(order.getProductQntList()));
+            orderProducer.sendOrderDoneMessage(new OrderDoneMsg(orderId, order.getProductQntList()));
         } else {
             throw new NotFoundException(orderId);
         }
