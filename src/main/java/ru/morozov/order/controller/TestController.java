@@ -2,7 +2,6 @@ package ru.morozov.order.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -10,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.morozov.messages.*;
+import ru.morozov.order.service.MessageService;
 
 @RestController
 @RequestMapping("/tests")
@@ -18,7 +18,7 @@ import ru.morozov.messages.*;
 public class TestController {
 
     @Autowired
-    private RabbitTemplate rabbitTemplate;
+    private MessageService messageService;
 
     @Value("${active-mq.ProductReserved-topic}")
     private String productReservedTopic;
@@ -41,51 +41,38 @@ public class TestController {
     @Value("${active-mq.OrderDone-exchange}")
     private String orderDoneExchange;
 
-    private void sendMessage(String topic, String routingKey, Object message){
-        try{
-            log.info("Attempting send message to Topic: "+ topic);
-            if (routingKey == null)
-                rabbitTemplate.convertAndSend(topic, message);
-            else
-                rabbitTemplate.convertAndSend(topic, routingKey, message);
-            log.info("Message sent: {}", message);
-        } catch(Exception e){
-            log.error("Failed to send message", e);
-        }
-    }
-
     @PostMapping("/sendProductReservedMsg")
     public void sendProductReservedMsg(@RequestBody ProductReservedMsg message) {
-        sendMessage(productReservedTopic, null, message);
+        messageService.scheduleSentMessage(productReservedTopic, null, message, ProductReservedMsg.class);
     }
 
     @PostMapping("/sendNotEnoughProductMsg")
     public void sendNotEnoughProductMsg(@RequestBody NotEnoughProductMsg message) {
-        sendMessage(notEnoughProductTopic, null, message);
+        messageService.scheduleSentMessage(notEnoughProductTopic, null, message, NotEnoughProductMsg.class);
     }
 
     @PostMapping("/sendPaymentSuccessfulMsg")
     public void sendPaymentSuccessfulMsg(@RequestBody PaymentSuccessfulMsg message) {
-        sendMessage(paymentSuccessfulTopic, null, message);
+        messageService.scheduleSentMessage(paymentSuccessfulTopic, null, message, PaymentSuccessfulMsg.class);
     }
 
     @PostMapping("/sendPaymentRejectedMsg")
     public void sendPaymentRejectedMsg(@RequestBody PaymentRejectedMsg message) {
-        sendMessage(paymentRejectedTopic, null, message);
+        messageService.scheduleSentMessage(paymentRejectedTopic, null, message, PaymentRejectedMsg.class);
     }
 
     @PostMapping("/sendDeliveryScheduledMsg")
     public void sendNotEnoughProductMsg(@RequestBody DeliveryScheduledMsg message) {
-        sendMessage(deliveryScheduledTopic, null, message);
+        messageService.scheduleSentMessage(deliveryScheduledTopic, null, message, DeliveryScheduledMsg.class);
     }
 
     @PostMapping("/sendDeliveryRejectedMsg")
     public void sendDeliveryRejectedMsg(@RequestBody DeliveryRejectedMsg message) {
-        sendMessage(deliveryRejectedTopic, null, message);
+        messageService.scheduleSentMessage(deliveryRejectedTopic, null, message, DeliveryRejectedMsg.class);
     }
 
     @PostMapping("/sendOrderDoneMsg")
     public void sendOrderDoneMsg(@RequestBody OrderDoneMsg message) {
-        sendMessage(orderDoneExchange, "default", message);
+        messageService.scheduleSentMessage(orderDoneExchange, "default", message, OrderDoneMsg.class);
     }
 }

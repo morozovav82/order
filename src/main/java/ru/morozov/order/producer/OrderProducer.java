@@ -1,18 +1,21 @@
 package ru.morozov.order.producer;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import ru.morozov.messages.*;
+import ru.morozov.messages.OrderCanceledMsg;
+import ru.morozov.messages.OrderCreatedMsg;
+import ru.morozov.messages.OrderDoneMsg;
+import ru.morozov.messages.OrderReadyMsg;
+import ru.morozov.order.service.MessageService;
 
 @Component
 @Slf4j
 public class OrderProducer {
 
     @Autowired
-    private RabbitTemplate rabbitTemplate;
+    private MessageService messageService;
 
     @Value("${active-mq.OrderCreated-topic}")
     private String orderCreatedTopic;
@@ -26,32 +29,19 @@ public class OrderProducer {
     @Value("${active-mq.OrderDone-exchange}")
     private String orderDoneExchange;
 
-    private void sendMessage(String topic, String routingKey, Object message){
-        try{
-            log.info("Attempting send message to Topic: "+ topic);
-            if (routingKey == null)
-                rabbitTemplate.convertAndSend(topic, message);
-            else
-                rabbitTemplate.convertAndSend(topic, routingKey, message);
-            log.info("Message sent: {}", message);
-        } catch(Exception e){
-            log.error("Failed to send message", e);
-        }
-    }
-
     public void sendOrderCreatedMessage(OrderCreatedMsg message){
-        sendMessage(orderCreatedTopic, null, message);
+        messageService.scheduleSentMessage(orderCreatedTopic, null, message, OrderCreatedMsg.class);
     }
 
     public void sendOrderReadyMessage(OrderReadyMsg message){
-        sendMessage(orderReadyTopic, null, message);
+        messageService.scheduleSentMessage(orderReadyTopic, null, message, OrderReadyMsg.class);
     }
 
     public void sendOrderCanceledMessage(OrderCanceledMsg message){
-        sendMessage(orderCanceledTopic, null, message);
+        messageService.scheduleSentMessage(orderCanceledTopic, null, message, OrderCanceledMsg.class);
     }
 
     public void sendOrderDoneMessage(OrderDoneMsg message) {
-        sendMessage(orderDoneExchange, "default", message);
+        messageService.scheduleSentMessage(orderDoneExchange, "default", message, OrderDoneMsg.class);
     }
 }
