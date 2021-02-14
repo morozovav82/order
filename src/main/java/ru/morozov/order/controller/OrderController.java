@@ -28,6 +28,7 @@ public class OrderController {
 
     @PostMapping
     public ResponseEntity<OrderDto> createOrder(@RequestBody NewOrderRequest order, @RequestHeader("X-Request-Id") String idempotenceKey) {
+        idempotenceKey = "CreateOrder_" + idempotenceKey;
         log.info("idempotenceKey={}", idempotenceKey);
 
         //idempotence check
