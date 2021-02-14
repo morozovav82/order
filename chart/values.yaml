@@ -10,7 +10,7 @@ appBasePath: '/order'
 cartUrl: 'http://cart-cart-chart.morozovav.svc.cluster.local:9000'
 
 postgresql:
-  fullname: users-postgresql
+  fullname: postgresql.morozovav.svc.cluster.local
   postgresqlDatabase: users
   postgresqlUsername: users
   postgresqlPassword: qwerty123
