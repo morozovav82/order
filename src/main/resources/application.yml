@@ -15,6 +15,7 @@ spring:
 
 app.basePath:
 cart.url: ${CART_URL}
+users.url: ${USERS_URL}
 
 active-mq:
   OrderCreated-topic: OrderCreated

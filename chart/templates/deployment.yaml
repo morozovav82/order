@@ -32,6 +32,11 @@ spec:
                 configMapKeyRef:
                   name: order-config
                   key: BASE_APP_URL
+            - name: USERS_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: order-config
+                  key: USERS_URL
             - name: DB_URL
               valueFrom:
                 configMapKeyRef:

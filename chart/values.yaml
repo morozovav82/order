@@ -7,6 +7,9 @@ service:
   port: 9000
 
 appBasePath: '/order'
+authSigninUrl: 'http://$host/auth/signin'
+authAuthUrl: 'http://auth-auth-chart.morozovav.svc.cluster.local:9010/auth'
+usersUrl: 'http://users-users-chart.morozovav.svc.cluster.local:9000'
 cartUrl: 'http://cart-cart-chart.morozovav.svc.cluster.local:9000'
 
 postgresql:

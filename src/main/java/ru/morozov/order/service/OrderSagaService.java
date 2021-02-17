@@ -58,6 +58,9 @@ public class OrderSagaService {
     }
 
     public void notEnoughProduct(Long orderId) {
+        Optional<OrderSaga> orderSagaStep = orderSagaRepository.findOneByOrderIdAndStep(orderId, SagaStep.Done.name());
+        Assert.isTrue(!orderSagaStep.isPresent(), "Wrong step");
+
         log.info("notEnoughProduct, OrderId=" + orderId);
         cancel(orderId);
     }
@@ -79,6 +82,9 @@ public class OrderSagaService {
     }
 
     public void paymentRejected(Long orderId) {
+        Optional<OrderSaga> orderSagaStep = orderSagaRepository.findOneByOrderIdAndStep(orderId, SagaStep.Done.name());
+        Assert.isTrue(!orderSagaStep.isPresent(), "Wrong step");
+
         log.info("paymentRejected, OrderId=" + orderId);
         cancel(orderId);
     }
@@ -99,6 +105,9 @@ public class OrderSagaService {
     }
 
     public void deliveryRejected(Long orderId) {
+        Optional<OrderSaga> orderSagaStep = orderSagaRepository.findOneByOrderIdAndStep(orderId, SagaStep.Done.name());
+        Assert.isTrue(!orderSagaStep.isPresent(), "Wrong step");
+
         log.info("deliveryRejected, OrderId=" + orderId);
         cancel(orderId);
     }

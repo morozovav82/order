@@ -1,7 +1,7 @@
-logging:
-  level:
-    org.hibernate.SQL: debug
-    org.hibernate.type: trace
+#logging:
+#  level:
+#    org.hibernate.SQL: debug
+#    org.hibernate.type: trace
 
 server:
   port: 8083
@@ -26,3 +26,4 @@ spring:
 
 app.basePath: /order
 cart.url: http://localhost:8087/cart
+users.url: http://localhost:8081/users
