@@ -88,7 +88,7 @@ public class OrderService {
             order.setStatus(Status.READY.name());
             orderRepository.save(order);
 
-            orderProducer.sendOrderReadyMessage(new OrderReadyMsg(orderId));
+            orderProducer.sendOrderReadyMessage(new OrderReadyMsg(orderId, order.getUserId()));
         } else {
             throw new NotFoundException(orderId);
         }
@@ -114,7 +114,7 @@ public class OrderService {
             order.setStatus(Status.CANCELED.name());
             orderRepository.save(order);
 
-            orderProducer.sendOrderCanceledMessage(new OrderCanceledMsg(orderId));
+            orderProducer.sendOrderCanceledMessage(new OrderCanceledMsg(orderId, order.getUserId()));
         } else {
             throw new NotFoundException(orderId);
         }
