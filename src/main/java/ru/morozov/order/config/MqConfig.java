@@ -9,52 +9,52 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class MqConfig {
 
-    @Value("${active-mq.ProductReserved-topic}")
+    @Value("${mq.ProductReserved-topic}")
     private String productReservedTopic;
 
-    @Value("${active-mq.NotEnoughProduct-topic}")
+    @Value("${mq.NotEnoughProduct-topic}")
     private String notEnoughProductTopic;
 
-    @Value("${active-mq.PaymentSuccessful-topic}")
+    @Value("${mq.PaymentSuccessful-topic}")
     private String paymentSuccessfulTopic;
 
-    @Value("${active-mq.PaymentRejected-topic}")
+    @Value("${mq.PaymentRejected-topic}")
     private String paymentRejectedTopic;
 
-    @Value("${active-mq.DeliveryScheduled-topic}")
+    @Value("${mq.DeliveryScheduled-topic}")
     private String deliveryScheduledTopic;
 
-    @Value("${active-mq.DeliveryRejected-topic}")
+    @Value("${mq.DeliveryRejected-topic}")
     private String deliveryRejectedTopic;
 
-    @Value("${active-mq.OrderCreated-topic}")
+    @Value("${mq.OrderCreated-topic}")
     private String orderCreatedTopic;
 
-    @Value("${active-mq.OrderReady-topic}")
+    @Value("${mq.OrderReady-topic}")
     private String orderReadyTopic;
 
-    @Value("${active-mq.OrderCanceled-topic}")
+    @Value("${mq.OrderCanceled-topic}")
     private String orderCanceledTopic;
 
-    @Value("${active-mq.OrderDone-exchange}")
+    @Value("${mq.OrderDone-exchange}")
     private String orderDoneExchange;
 
-    @Value("${active-mq.SagaReserveProduct-topic}")
+    @Value("${mq.SagaReserveProduct-topic}")
     private String sagaReserveProductTopic;
 
-    @Value("${active-mq.SagaMakePayment-topic}")
+    @Value("${mq.SagaMakePayment-topic}")
     private String sagaMakePaymentTopic;
 
-    @Value("${active-mq.SagaScheduleDelivery-topic}")
+    @Value("${mq.SagaScheduleDelivery-topic}")
     private String sagaScheduleDeliveryTopic;
 
-    @Value("${active-mq.SagaReserveProductRollback-topic}")
+    @Value("${mq.SagaReserveProductRollback-topic}")
     private String sagaReserveProductRollbackTopic;
 
-    @Value("${active-mq.SagaMakePaymentRollback-topic}")
+    @Value("${mq.SagaMakePaymentRollback-topic}")
     private String sagaMakePaymentRollbackTopic;
 
-    @Value("${active-mq.SagaScheduleDeliveryRollback-topic}")
+    @Value("${mq.SagaScheduleDeliveryRollback-topic}")
     private String sagaScheduleDeliveryRollbackTopic;
 
     @Bean

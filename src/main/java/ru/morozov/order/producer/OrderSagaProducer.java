@@ -14,22 +14,22 @@ public class OrderSagaProducer {
     @Autowired
     private RabbitTemplate rabbitTemplate;
 
-    @Value("${active-mq.SagaReserveProduct-topic}")
+    @Value("${mq.SagaReserveProduct-topic}")
     private String sagaReserveProductTopic;
 
-    @Value("${active-mq.SagaMakePayment-topic}")
+    @Value("${mq.SagaMakePayment-topic}")
     private String sagaMakePaymentTopic;
 
-    @Value("${active-mq.SagaScheduleDelivery-topic}")
+    @Value("${mq.SagaScheduleDelivery-topic}")
     private String sagaScheduleDeliveryTopic;
 
-    @Value("${active-mq.SagaReserveProductRollback-topic}")
+    @Value("${mq.SagaReserveProductRollback-topic}")
     private String sagaReserveProductRollbackTopic;
 
-    @Value("${active-mq.SagaMakePaymentRollback-topic}")
+    @Value("${mq.SagaMakePaymentRollback-topic}")
     private String sagaMakePaymentRollbackTopic;
 
-    @Value("${active-mq.SagaScheduleDeliveryRollback-topic}")
+    @Value("${mq.SagaScheduleDeliveryRollback-topic}")
     private String sagaScheduleDeliveryRollbackTopic;
 
     private void sendMessage(String topic, Object message){

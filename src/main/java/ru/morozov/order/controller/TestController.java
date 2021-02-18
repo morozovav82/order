@@ -20,25 +20,25 @@ public class TestController {
     @Autowired
     private MessageService messageService;
 
-    @Value("${active-mq.ProductReserved-topic}")
+    @Value("${mq.ProductReserved-topic}")
     private String productReservedTopic;
 
-    @Value("${active-mq.NotEnoughProduct-topic}")
+    @Value("${mq.NotEnoughProduct-topic}")
     private String notEnoughProductTopic;
 
-    @Value("${active-mq.PaymentSuccessful-topic}")
+    @Value("${mq.PaymentSuccessful-topic}")
     private String paymentSuccessfulTopic;
 
-    @Value("${active-mq.PaymentRejected-topic}")
+    @Value("${mq.PaymentRejected-topic}")
     private String paymentRejectedTopic;
 
-    @Value("${active-mq.DeliveryScheduled-topic}")
+    @Value("${mq.DeliveryScheduled-topic}")
     private String deliveryScheduledTopic;
 
-    @Value("${active-mq.DeliveryRejected-topic}")
+    @Value("${mq.DeliveryRejected-topic}")
     private String deliveryRejectedTopic;
 
-    @Value("${active-mq.OrderDone-exchange}")
+    @Value("${mq.OrderDone-exchange}")
     private String orderDoneExchange;
 
     @PostMapping("/sendProductReservedMsg")

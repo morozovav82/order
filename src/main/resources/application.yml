@@ -17,7 +17,7 @@ app.basePath:
 cart.url: ${CART_URL}
 users.url: ${USERS_URL}
 
-active-mq:
+mq:
   OrderCreated-topic: OrderCreated
   OrderReady-topic: OrderReady
   OrderCanceled-topic: OrderCanceled

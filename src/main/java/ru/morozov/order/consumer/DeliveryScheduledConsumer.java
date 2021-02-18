@@ -11,7 +11,7 @@ import ru.morozov.order.service.OrderSagaService;
 @Component
 @Slf4j
 @RequiredArgsConstructor
-@RabbitListener(queues = "${active-mq.DeliveryScheduled-topic}")
+@RabbitListener(queues = "${mq.DeliveryScheduled-topic}")
 public class DeliveryScheduledConsumer {
 
     private final OrderSagaService orderSagaService;

@@ -11,7 +11,7 @@ import ru.morozov.order.service.OrderSagaService;
 @Component
 @Slf4j
 @RequiredArgsConstructor
-@RabbitListener(queues = "${active-mq.DeliveryRejected-topic}")
+@RabbitListener(queues = "${mq.DeliveryRejected-topic}")
 public class DeliveryRejectedConsumer {
 
     private final OrderSagaService orderSagaService;

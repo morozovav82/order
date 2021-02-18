@@ -17,16 +17,16 @@ public class OrderProducer {
     @Autowired
     private MessageService messageService;
 
-    @Value("${active-mq.OrderCreated-topic}")
+    @Value("${mq.OrderCreated-topic}")
     private String orderCreatedTopic;
 
-    @Value("${active-mq.OrderReady-topic}")
+    @Value("${mq.OrderReady-topic}")
     private String orderReadyTopic;
 
-    @Value("${active-mq.OrderCanceled-topic}")
+    @Value("${mq.OrderCanceled-topic}")
     private String orderCanceledTopic;
 
-    @Value("${active-mq.OrderDone-exchange}")
+    @Value("${mq.OrderDone-exchange}")
     private String orderDoneExchange;
 
     public void sendOrderCreatedMessage(OrderCreatedMsg message){
