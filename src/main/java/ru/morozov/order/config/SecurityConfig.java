@@ -2,6 +2,7 @@ package ru.morozov.order.config;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -36,6 +37,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/public/**").permitAll()
                 .antMatchers("/tests/**").permitAll()
+                .antMatchers(HttpMethod.POST, "/{orderId:\\d+}/confirm").hasRole("MANAGER")
+                .antMatchers(HttpMethod.POST, "/{orderId:\\d+}/cancel").hasRole("MANAGER")
+                .antMatchers(HttpMethod.POST, "/{orderId:\\d+}/done").hasRole("MANAGER")
                 .anyRequest().authenticated()
                 .and()
                 .csrf().disable();

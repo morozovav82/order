@@ -13,6 +13,7 @@ import ru.morozov.order.exceptions.NotFoundException;
 import ru.morozov.order.repo.RedisRepository;
 import ru.morozov.order.service.OrderSagaService;
 import ru.morozov.order.service.OrderService;
+import ru.morozov.order.utils.AuthUtils;
 
 import java.util.List;
 
@@ -28,6 +29,10 @@ public class OrderController {
 
     @PostMapping
     public ResponseEntity<OrderDto> createOrder(@RequestBody NewOrderRequest order, @RequestHeader("X-Request-Id") String idempotenceKey) {
+        if (!AuthUtils.getCurrentUserId().equals(order.getUserId())) {
+            return new ResponseEntity(HttpStatus.FORBIDDEN);
+        }
+
         idempotenceKey = "CreateOrder_" + idempotenceKey;
         log.info("idempotenceKey={}", idempotenceKey);
 
